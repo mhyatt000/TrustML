@@ -1,8 +1,14 @@
 
-for model in urls:
+def main():
+    for model in urls:
 
-    provenance = ()
-    reproducibility = ()
-    portability = ()
+        blob = scrape_model_hub(url)
 
-    print(provenance, reproducibility, portability)
+        provenance = get_provenance(blob)
+        reproducibility = get_reproducibility(blob)
+        portability = get_portability(blob)
+
+        print(provenance, reproducibility, portability)
+
+if __name__ == '__main__':
+    main()

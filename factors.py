@@ -1,11 +1,11 @@
-def get_provenance():
+def get_provenance(blob):
 
     pass 
 
-def get_reproducibility():
+def get_reproducibility(blob):
 
     pass
 
-def get_portability():
+def get_portability(blob):
 
     pass
