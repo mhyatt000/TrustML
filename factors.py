@@ -1,6 +1,6 @@
 def get_provenance(blob):
-
-    pass 
+    ' ... or you could use a dict with the pieces inside ...'
+    pass
 
 def get_reproducibility(blob):
 
