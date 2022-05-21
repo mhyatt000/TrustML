@@ -1,5 +1,6 @@
 import requests
 import BeautifulSoup as bs4
+import re
 
 def scrape_model_hub(url):
 
