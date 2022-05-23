@@ -33,6 +33,19 @@ def timer(func):
 
     return wrap_timer
 
+def err(func):
+    '''error handling'''
+
+    @functools.wraps(func)
+    def wrap_err(*args, **kwargs):
+        try:
+            value = func(*args, **kwargs)
+        except:
+            print('investigate err')
+        return value if value else None
+
+    return wrap_err
+
 
 # @timer
 # @show
@@ -47,13 +60,24 @@ def get_websites(body, site):
 
 
 def spaceout(iter):
+    if type(iter) is str:
+        print(iter)
+        return
     for i in iter:
-        print(i)
         print("\n\n")
+        try:
+            print(i.prettify())
+        except:
+            print(i)
+
+def unpack(res):
+    '''unpacks bs4 ResultSet object nicely'''
+    return list(res)[0]
 
 
-def re_empty():
-    """uses regex to evaluate string emptiness"""
+def nostr(iter):
+    '''removes NavigableString objects from iter'''
+    return [i for i in iter if not type(i) is NavigableString]
 
 
 def scrape_model_hub(url):
@@ -73,47 +97,46 @@ def scrape_model_hub(url):
     # print(body.prettify())
 
     data = {
-        "factors1": {
-            "homepage": None,
-            "downloads": None,
-            "version": None,
-            "license": None,
-            "gh-stars": None,
-            "forks": None,
-            "issues": None,
-            "pull-requests": None,
-            "last-publish": None,
-            "authors": None,
-            "dependencies": None,
-            "os": None,
-            "badges": None,
-            "library.io": None,
+        'name': None,
+        "homepage": None,
+        "downloads": None,
+        "version": None,
+        "license": None,
+        "gh-stars": None,
+        "forks": None,
+        "issues": None,
+        "pull-requests": None,
+        "last-publish": None,
+        "authors": None,
+        "dependencies": None,
+        "os": None,
+        "badges": None,
+        "library.io": None,
+        "desc": None,
+        "architecture": None,
+        "dataset": None,
+        "trainable": None,
+        "framework": None,
+        "applications": None,
+        "performance": {
+            "flops": None,
+            "accuracy": None,
+            "latency": None,
         },
-        "factors2": {
-            "desc": None,
-            "architecture": None,
-            "dataset": None,
-            "trainable": None,
-            "framework": None,
-            "applications": None,
-            "performance": {
-                "flops": None,
-                "accuracy": None,
-                "latency": None,
-            },
-            "domain": None,
-            "demo": None,
-            "preprocessing": None,
-            "postprocessing": None,
-            "docker": None,
-            "inference": None,
-        },
+        "domain": None,
+        "demo": None,
+        "preprocessing": None,
+        "postprocessing": None,
+        "docker": None,
+        "inference": None,
     }
 
     if hub == "huggingface":
+        prefix = "https://huggingface.co"
 
         header_container = body.find(class_="container relative")
-        name = header_container.find(
+
+        data['name'] = header_container.find(
             "a", class_="font-mono font-semibold break-words"
         ).get_text()
 
@@ -121,11 +144,37 @@ def scrape_model_hub(url):
 
         desc = [item for item in body.find_all("section") if type(item) is Tag]
 
+        '''
+            how to parse desc for architecture and accuracy ...
+            perplexity
+            layers, heads, params
+
+        '''
+
+
         # print(len(desc), desc[1].prettify())
 
-        dataset = body.select("h2 svg")[0].parent.children
+        downloads = list(body.find('div', {'class' : 'model-graph flex-none'}).parent.children)[0].get_text()
+        data['downloads'] = int(re.sub('\D','',downloads))
 
-        prefix = "https://huggingface.co/"
+        dataset = nostr(unpack(body.select("nav article a")).children)
+
+        data['dataset'] = {
+            'name' : dataset[0].find('h4').get_text(),
+            'link' : prefix + dataset[0].parent['href'],
+            'last-updated' : None,
+            'downloads' : None,
+            'likes' : None
+        }
+
+        # [0].parent.children)
+
+
+        # spaceout(dataset)
+        # print(dataset.prettify())
+
+        # quit()
+
         applications = list(
             body.select('nav[class="max-w-full flex flex-wrap gap-x-2.5 gap-y-2"]')[
                 0
