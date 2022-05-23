@@ -16,6 +16,7 @@ def scrape_model_hub(url):
     # print(soup.prettify())
 
     body = soup.find('body')
+    print(body.prettify())
 
     blob = ''
 
@@ -25,7 +26,6 @@ def scrape_model_hub(url):
     if hub == 'tfhub':
 
         desc = soup.find_all(class_='overview')
-        print(body.prettify())
 
 
     if 'hub_c':
@@ -36,8 +36,8 @@ def scrape_model_hub(url):
 
 def main():
 
-    hub = 'https://tfhub.dev/deepmind/mmt/architecture-ft_language-q-24/1'
-    # hub = 'https://huggingface.co/docs/transformers/main/en/model_doc/gpt2#transformers.GPT2LMHeadModel'
+    # hub = 'https://tfhub.dev/deepmind/mmt/architecture-ft_language-q-24/1'
+    hub = 'https://huggingface.co/docs/transformers/main/en/model_doc/gpt2#transformers.GPT2LMHeadModel'
 
     scrape_model_hub(hub)
 
