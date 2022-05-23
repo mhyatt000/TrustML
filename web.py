@@ -138,7 +138,7 @@ def scrape_model_hub(url):
             )
         )
 
-        pprint(data["applications"])
+        pprint(data)
 
         # h1 = body.find('h1')
         # print(len(h1))
