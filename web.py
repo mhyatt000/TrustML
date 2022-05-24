@@ -72,7 +72,7 @@ def spaceout(iter):
 
 def unpack(res):
     '''unpacks bs4 ResultSet object nicely'''
-    return list(res)[0]
+    return list(res) #[0]
 
 
 def nostr(iter):
